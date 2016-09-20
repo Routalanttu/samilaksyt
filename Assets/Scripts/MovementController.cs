@@ -20,6 +20,9 @@ namespace Runner
 
 		private bool _isGrounded = false;
 
+		private bool _hasDoubleJumped = false;
+		private bool _doubleJumpInitiated = false;
+
 		private void Awake () {
 			_animator = GetComponent<Animator> ();
 			_rb = GetComponent<Rigidbody2D> ();
@@ -43,6 +46,8 @@ namespace Runner
 			if (_isGrounded) {
 				_animator.SetFloat (SpeedAnimationParameterName, movementAmount);
 				_rb.velocity = new Vector2 (movementAmount * _speed, _rb.velocity.y);
+				_hasDoubleJumped = false;
+				_doubleJumpInitiated = false;
 			}
 
 			// Should we jump?
@@ -51,6 +56,25 @@ namespace Runner
 				_animator.SetBool (GroundedAnimationParameterName, _isGrounded); //aina false
 				_rb.AddForce(new Vector2(0f,_jumpForce));
 			}
+
+			// Should we doublejump?
+			if (!_isGrounded && _hasDoubleJumped && !_doubleJumpInitiated) {
+				_rb.velocity = new Vector2 (_rb.velocity.x, 0f);
+				_rb.AddForce(new Vector2(0f,_jumpForce));
+				_doubleJumpInitiated = true;
+			}
+		}
+
+		public void SetDoubleJumpedStatus (bool status) {
+			_hasDoubleJumped = status;
+		}
+
+		public bool GetDoubleJumpStatus () {
+			return _hasDoubleJumped;
+		}
+
+		public bool GetGroundedStatus () {
+			return _isGrounded;
 		}
 	}
 

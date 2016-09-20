@@ -12,6 +12,14 @@ namespace Runner
 		}
 
 		private void Update () {
+			if (_movementController.GetGroundedStatus() == false &&
+				_movementController.GetDoubleJumpStatus() == false &&
+				Input.GetButtonDown("Jump")) {
+				_isJumping = true;
+				_movementController.SetDoubleJumpedStatus (true);
+				Debug.Log ("I double jumped!");
+			}
+
 			if (!_isJumping) {
 				_isJumping = Input.GetButtonDown ("Jump");
 			}
